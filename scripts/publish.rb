@@ -60,7 +60,11 @@ Dir.mktmpdir("skills-manager-tap") do |download_dir|
     fail_unless(sums.fetch(asset) == checksum, "checksum mismatch for #{asset}")
     entries = `tar -tzf #{Shellwords.escape(path)}`.lines.map { |line| line.chomp.delete_suffix("/") }.sort
     fail_unless(entries == %w[LICENSE README.md skills-manager], "invalid archive layout for #{asset}")
-    system("gh", "attestation", "verify", path, "-R", source_repository) || abort("attestation verification failed for #{asset}")
+    system(
+      "gh", "attestation", "verify", path, "-R", source_repository,
+      "--signer-workflow", "#{source_repository}/.github/workflows/release.yml",
+      "--source-ref", "refs/tags/#{tag}"
+    ) || abort("attestation verification failed for #{asset}")
   end
 
   source_commit = gh_output("api", "repos/#{source_repository}/commits/#{tag}", "--jq", ".sha").strip

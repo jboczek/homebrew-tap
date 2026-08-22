@@ -42,10 +42,10 @@ jobs:
         run: |
           if [[ -f Formula/skills-manager.rb ]]; then
             if git show origin/main:Formula/skills-manager.rb >/dev/null 2>&1; then
-              brew style --formula
-              brew audit --strict --online --os=all --arch=all --formula
+              brew style --formula skills-manager
+              brew audit --strict --online --os=all --arch=all --formula skills-manager
             else
-              brew audit --new --formula
+              brew audit --new --formula skills-manager
             fi
             brew test-bot --only-formulae --build-from-source
             HOMEBREW_NO_INSTALL_FROM_API=1 brew install --build-from-source skills-manager
