@@ -41,4 +41,11 @@ class PublisherContractTest < Minitest::Test
     refute PublisherContract.retry_matches?(expected, expected.merge("source_commit" => "def456"))
     refute PublisherContract.retry_matches?(expected, expected.merge("diff" => ["Formula/skills-manager.rb", "README.md"]))
   end
+
+  def test_publisher_sets_a_noninteractive_git_identity_before_committing
+    publisher = File.read(File.expand_path("../scripts/publish.rb", __dir__))
+
+    assert_includes publisher, '"config", "user.name", "github-actions[bot]"'
+    assert_includes publisher, '"config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"'
+  end
 end
