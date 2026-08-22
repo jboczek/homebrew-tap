@@ -5,6 +5,12 @@ on:
     branches: [main]
     paths:
       - Formula/skills-manager.rb
+      - scripts/publish.rb
+      - scripts/publisher_contract.rb
+      - .github/workflows/formula-checks.yml
+      - .github/workflows/publish-skills-manager.yml
+      - test/publisher_contract_test.rb
+      - test/tap_workflow_contract_test.rb
 
 permissions:
   contents: read
