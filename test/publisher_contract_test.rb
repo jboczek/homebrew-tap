@@ -9,10 +9,12 @@ class PublisherContractTest < Minitest::Test
   def test_formula_is_architecture_specific_and_installs_the_binary
     formula = PublisherContract.render_formula(VERSION, ARM_SHA, INTEL_SHA)
 
-    assert_includes formula, 'version "0.1.0"'
+    assert_includes formula, "version \"0.1.0\"\n  stable.version Version.new(\"0.1.0\", detected_from_url: true)"
     assert_includes formula, "depends_on :macos"
-    assert_includes formula, "on_arm do"
-    assert_includes formula, "on_intel do"
+    assert_includes formula, "def self.configure_architecture\n    on_arm do\n      url \"https://github.com/jboczek/skills-manager/releases/download/v0.1.0/skills-manager-v0.1.0-aarch64-apple-darwin.tar.gz\"\n      sha256 \"#{ARM_SHA}\""
+    assert_includes formula, "on_intel do\n      url \"https://github.com/jboczek/skills-manager/releases/download/v0.1.0/skills-manager-v0.1.0-x86_64-apple-darwin.tar.gz\"\n      sha256 \"#{INTEL_SHA}\""
+    assert_includes formula, "configure_architecture\n  version \"0.1.0\""
+    refute_includes formula, "stable do"
     assert_includes formula, ARM_SHA
     assert_includes formula, INTEL_SHA
     assert_includes formula, 'bin.install "skills-manager"'
@@ -41,6 +43,7 @@ class PublisherContractTest < Minitest::Test
     refute PublisherContract.retry_matches?(expected, expected.merge("source_commit" => "def456"))
     refute PublisherContract.retry_matches?(expected, expected.merge("diff" => ["Formula/skills-manager.rb", "README.md"]))
   end
+
   def test_publisher_sets_a_noninteractive_git_identity_before_committing
     publisher = File.read(File.expand_path("../scripts/publish.rb", __dir__))
 
@@ -53,5 +56,12 @@ class PublisherContractTest < Minitest::Test
 
     assert_includes publisher, '"--signer-workflow", "#{source_repository}/.github/workflows/release.yml"'
     assert_includes publisher, '"--source-ref", "refs/tags/#{tag}"'
+  end
+
+  def test_existing_pr_retry_refreshes_its_branch_from_current_main
+    publisher = File.read(File.expand_path("../scripts/publish.rb", __dir__))
+
+    assert_includes publisher, 'git_output("merge", "--no-edit", "origin/main")'
+    assert_includes publisher, 'system("git", "push", "origin", branch)'
   end
 end
