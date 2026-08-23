@@ -11,8 +11,9 @@ class PublisherContractTest < Minitest::Test
 
     assert_includes formula, "version \"0.1.0\"\n  stable.version Version.new(\"0.1.0\", detected_from_url: true)"
     assert_includes formula, "depends_on :macos"
-    assert_includes formula, "on_arm do"
-    assert_includes formula, "on_intel do"
+    assert_includes formula, "stable do\n    on_arm do\n      url"
+    assert_includes formula, "stable do\n    on_arm do\n      url \"https://github.com/jboczek/skills-manager/releases/download/v0.1.0/skills-manager-v0.1.0-aarch64-apple-darwin.tar.gz\"\n      sha256"
+    assert_includes formula, "on_intel do\n      url \"https://github.com/jboczek/skills-manager/releases/download/v0.1.0/skills-manager-v0.1.0-x86_64-apple-darwin.tar.gz\"\n      sha256"
     assert_includes formula, ARM_SHA
     assert_includes formula, INTEL_SHA
     assert_includes formula, 'bin.install "skills-manager"'
