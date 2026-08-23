@@ -1,7 +1,8 @@
 class SkillsManager < Formula
   desc "Terminal-first skill exposure manager"
   homepage "https://github.com/jboczek/skills-manager"
-  version Version.new("0.1.0", detected_from_url: true)
+  version "0.1.0"
+  stable.version Version.new("0.1.0", detected_from_url: true)
   license "MIT"
   depends_on :macos
 
