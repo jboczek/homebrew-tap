@@ -25,14 +25,16 @@ module PublisherContract
         license "MIT"
         depends_on :macos
 
-        on_arm do
-          url "#{base_url}/#{arm_archive}"
-          sha256 "#{arm_sha256}"
-        end
+        stable do
+          on_arm do
+            url "#{base_url}/#{arm_archive}"
+            sha256 "#{arm_sha256}"
+          end
 
-        on_intel do
-          url "#{base_url}/#{intel_archive}"
-          sha256 "#{intel_sha256}"
+          on_intel do
+            url "#{base_url}/#{intel_archive}"
+            sha256 "#{intel_sha256}"
+          end
         end
 
         def install
