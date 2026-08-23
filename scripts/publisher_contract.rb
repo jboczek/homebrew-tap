@@ -20,12 +20,8 @@ module PublisherContract
       class SkillsManager < Formula
         desc "Terminal-first skill exposure manager"
         homepage "https://github.com/jboczek/skills-manager"
-        version "#{version}"
-        stable.version Version.new("#{version}", detected_from_url: true)
-        license "MIT"
-        depends_on :macos
 
-        stable do
+        def self.configure_architecture
           on_arm do
             url "#{base_url}/#{arm_archive}"
             sha256 "#{arm_sha256}"
@@ -36,6 +32,12 @@ module PublisherContract
             sha256 "#{intel_sha256}"
           end
         end
+
+        configure_architecture
+        version "#{version}"
+        stable.version Version.new("#{version}", detected_from_url: true)
+        license "MIT"
+        depends_on :macos
 
         def install
           bin.install "skills-manager"
