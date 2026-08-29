@@ -8,11 +8,32 @@ require "tmpdir"
 
 require_relative "publisher_contract"
 
+CHECK_POLL_ATTEMPTS = 12
+CHECK_POLL_INTERVAL_SECONDS = 5
+
 def gh_output(*args)
   stdout, stderr, status = Open3.capture3("gh", *args)
   abort "gh #{args.join(" ")} failed: #{stderr}" unless status.success?
 
   stdout
+end
+
+def required_checks_pass?(pr_number, repository)
+  last_output = ""
+
+  CHECK_POLL_ATTEMPTS.times do |attempt|
+    stdout, stderr, status = Open3.capture3(
+      "gh", "pr", "checks", pr_number, "--repo", repository, "--required", "--watch"
+    )
+    last_output = stdout + stderr
+    return true if status.success?
+    break unless PublisherContract.no_checks_reported?(last_output)
+
+    sleep CHECK_POLL_INTERVAL_SECONDS if attempt < CHECK_POLL_ATTEMPTS - 1
+  end
+
+  warn last_output unless last_output.empty?
+  false
 end
 
 def git_output(*args)
@@ -141,6 +162,6 @@ Dir.mktmpdir("skills-manager-tap") do |download_dir|
   end
 
   pr_number = existing_pr.fetch("number").to_s
-  system("gh", "pr", "checks", pr_number, "--repo", ENV.fetch("GITHUB_REPOSITORY"), "--required", "--watch") || abort("required tap checks failed")
+  abort "required tap checks failed" unless required_checks_pass?(pr_number, ENV.fetch("GITHUB_REPOSITORY"))
   system("gh", "pr", "merge", pr_number, "--repo", ENV.fetch("GITHUB_REPOSITORY"), "--auto", "--squash", "--delete-branch") || abort("could not enable tap auto-merge")
 end
