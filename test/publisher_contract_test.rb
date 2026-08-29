@@ -83,4 +83,17 @@ class PublisherContractTest < Minitest::Test
     assert_includes publisher, 'git_output("merge", "--no-edit", "origin/main")'
     assert_includes publisher, 'system("git", "push", "origin", branch)'
   end
+
+  def test_publisher_retries_until_github_registers_pr_checks
+    publisher = File.read(File.expand_path("../scripts/publish.rb", __dir__))
+
+    assert_includes publisher, "CHECK_POLL_ATTEMPTS.times"
+    assert_includes publisher, "PublisherContract.no_checks_reported?(last_output)"
+    assert_includes publisher, "sleep CHECK_POLL_INTERVAL_SECONDS"
+  end
+
+  def test_only_missing_check_registration_is_retryable
+    assert PublisherContract.no_checks_reported?("no checks reported on the branch")
+    refute PublisherContract.no_checks_reported?("formula (ARM64): fail")
+  end
 end
