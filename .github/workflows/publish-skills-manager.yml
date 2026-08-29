@@ -26,7 +26,7 @@ jobs:
       statuses: read
     env:
       TAG: ${{ inputs.tag }}
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.TAP_PR_TOKEN }}
       SOURCE_REPOSITORY: jboczek/skills-manager
     steps:
       - name: Check out trusted tap code

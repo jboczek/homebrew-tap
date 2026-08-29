@@ -17,6 +17,13 @@ class TapWorkflowContractTest < Minitest::Test
     refute_match(/uses:\s+[^\s]+@(?![0-9a-f]{40})/, workflow)
   end
 
+  def test_publisher_uses_a_dedicated_pat_secret_for_github_api_calls
+    workflow = File.read(File.join(TAP_TEMPLATE_ROOT, ".github/workflows/publish-skills-manager.yml"))
+
+    assert_includes workflow, "GH_TOKEN: ${{ secrets.TAP_PR_TOKEN }}"
+    refute_includes workflow, "GH_TOKEN: ${{ github.token }}"
+  end
+
   def test_native_formula_checks_have_the_required_commands_and_names
     workflow = File.read(File.join(TAP_TEMPLATE_ROOT, ".github/workflows/formula-checks.yml"))
 
