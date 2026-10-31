@@ -4,19 +4,19 @@ class SkillsManager < Formula
 
   def self.configure_architecture
     on_arm do
-      url "https://github.com/jboczek/skills-manager/releases/download/v0.1.5/skills-manager-v0.1.5-aarch64-apple-darwin.tar.gz"
-      sha256 "84442a414fa53fdb1d8af477656383564abddbb2bfffd8d3e9191b2d276abb0f"
+      url "https://github.com/jboczek/skills-manager/releases/download/v0.1.6/skills-manager-v0.1.6-aarch64-apple-darwin.tar.gz"
+      sha256 "c746d386a3fa28c254de3a53c3ab16c68a904a03b343a36e24c48474b89588d8"
     end
 
     on_intel do
-      url "https://github.com/jboczek/skills-manager/releases/download/v0.1.5/skills-manager-v0.1.5-x86_64-apple-darwin.tar.gz"
-      sha256 "8fb23fa4373cac44b8e876f0df78cd4997a4ae810ecb69650e6cc4660758c63d"
+      url "https://github.com/jboczek/skills-manager/releases/download/v0.1.6/skills-manager-v0.1.6-x86_64-apple-darwin.tar.gz"
+      sha256 "9e4c3b6487186e2cf2dfe19268ef6ac0eec632b30d78d9a8d433f3ae659168e0"
     end
   end
 
   configure_architecture
-  version "0.1.5"
-  stable.version Version.new("0.1.5", detected_from_url: true)
+  version "0.1.6"
+  stable.version Version.new("0.1.6", detected_from_url: true)
   license "MIT"
   depends_on :macos
 
