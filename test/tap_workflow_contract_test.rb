@@ -28,7 +28,8 @@ class TapWorkflowContractTest < Minitest::Test
     workflow = File.read(File.join(TAP_TEMPLATE_ROOT, ".github/workflows/formula-checks.yml"))
 
     assert_includes workflow, "name: formula (${{ matrix.name }})"
-    assert_includes workflow, "runner: macos-14"
+    assert_match(/- name: ARM64\n\s+runner: macos-15\n/, workflow)
+    refute_match(/- name: ARM64\n\s+runner: macos-14\n/, workflow)
     assert_includes workflow, "runner: macos-15-intel"
     assert_includes workflow, "      - scripts/publish.rb\n"
     assert_includes workflow, "      - scripts/publisher_contract.rb\n"
