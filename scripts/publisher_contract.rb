@@ -58,6 +58,10 @@ module PublisherContract
     expected == existing
   end
 
+  def self.no_checks_reported?(output)
+    output.match?(/no checks reported/i)
+  end
+
   def self.release_prs_for_tag(pull_requests, tag)
     marker = /<!--\s*skills-manager-publisher\s+tag=#{Regexp.escape(tag)}\s+source_commit=[^ >]+\s*-->/
 
